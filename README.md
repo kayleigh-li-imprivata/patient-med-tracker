@@ -27,7 +27,7 @@ This codebase contains 7 intentional bugs, each with a corresponding log file:
 
 ## Log Files
 
-The `logs/` directory contains realistic production-style error logs in 7 different formats commonly used in enterprise environments:
+The `logs/` directory contains **production-grade error logs** in 7 different formats commonly used in enterprise environments. These logs are based on real-world documentation (AWS Lambda, Prometheus Alertmanager) and contain **NO artificial hints** - no "Bug #X" comments, no `root_cause` fields, no remediation suggestions. The Bug Ticket Analyzer must parse actual stack traces and infer root causes like it would in a real production environment.
 
 ### 1. Grafana Loki Format (`error_001_drug_interaction_grafana_loki.log`)
 - **Format:** LogQL with Kubernetes labels
