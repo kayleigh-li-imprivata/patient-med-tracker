@@ -1,52 +1,15 @@
-{job="medication-tracker", namespace="production", environment="prod", cluster="us-east-1-prod", pod="med-tracker-prod-03-7f8d9c-xk2p9", container="medication-tracker", node="ip-10-50-23-145", level="error", error_type="DrugInteractionError", department="cardiology"}
-2026-03-05T14:23:45.123456789Z ERROR medication_tracker.drug_interactions [correlation_id=req-a7f3c9d2-4e1b-4a89-9c3d-7f2e8b1a5c6d] [session_id=sess-nurse-station-3-20260305-142000] [thread=Thread-12] Drug interaction check failed for patient P-12345: aspirin conflicts with warfarin
+{job="medication-tracker", namespace="production", environment="prod", cluster="us-east-1-prod", pod="med-tracker-prod-03-7f8d9c-xk2p9", container="medication-tracker", node="ip-10-50-23-145", level="error"}
+2026-03-05T14:23:45.123456789Z ERROR medication_tracker.drug_interactions [correlation_id=req-a7f3c9d2-4e1b-4a89-9c3d-7f2e8b1a5c6d] [session_id=sess-nurse-station-3-20260305-142000] [thread=Thread-12] Drug interaction check failed for patient P-12345
 Traceback (most recent call last):
   File "/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py", line 234, in add_medication_endpoint
     service.add_medication_to_schedule(
   File "/opt/hospital/medication-tracker/src/medication_tracker/medication_service.py", line 66, in add_medication_to_schedule
     check_drug_interaction(schedule.medications, medication)
   File "/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py", line 45, in check_drug_interaction
-    if existing.name in DANGEROUS_INTERACTIONS:  # Line 45 - Bug #1
+    if existing.name in DANGEROUS_INTERACTIONS:
   File "/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py", line 47, in check_drug_interaction
     if new_medication.name in conflicts:
   File "/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py", line 49, in check_drug_interaction
     raise DrugInteractionError(
 medication_tracker.exceptions.DrugInteractionError: aspirin conflicts with warfarin
-
-Context:
-  patient_id=P-12345
-  patient_mrn=MRN-2024-789456
-  patient_name="John Anderson"
-  patient_age=67
-  patient_room=ICU-204
-  existing_medications=["warfarin:5.0mg/24h", "Metoprolol:50.0mg/12h", "Lisinopril:20.0mg/24h"]
-  new_medication="aspirin:81.0mg/24h"
-  prescribing_physician="Dr. Jennifer Wong"
-  nurse_id=N-4521
-  nurse_name="Sarah Thompson"
-  workstation=NURSE-STATION-3
-  hospital="Memorial General Hospital"
-  department=Cardiology
-  unit="Cardiac Intensive Care Unit"
-  
-Root Cause: Case-sensitive comparison bug - 'warfarin' (lowercase) not matching 'Warfarin' in DANGEROUS_INTERACTIONS dict
-Impact: CRITICAL - Could allow dangerous drug interactions to go undetected
-Incident ID: INC-2026-03-05-001
-
-Kubernetes Metadata:
-  pod.name=med-tracker-prod-03-7f8d9c-xk2p9
-  pod.namespace=production
-  pod.ip=10.244.3.47
-  node.name=ip-10-50-23-145
-  container.name=medication-tracker
-  container.image=medication-tracker:v0.1.0
-  deployment.name=medication-tracker-prod
-  service.name=medication-tracker
-  cluster.name=us-east-1-prod
-  
-System Info:
-  hostname=med-tracker-prod-03
-  python_version=3.12.1
-  memory_usage_mb=2847
-  cpu_usage_percent=34.5
-  uptime_hours=168.3
+patient_id=P-12345 patient_mrn=MRN-2024-789456 patient_name="John Anderson" patient_age=67 patient_room=ICU-204 existing_medications=["warfarin:5.0mg/24h", "Metoprolol:50.0mg/12h", "Lisinopril:20.0mg/24h"] new_medication="aspirin:81.0mg/24h" prescribing_physician="Dr. Jennifer Wong" nurse_id=N-4521 nurse_name="Sarah Thompson" workstation=NURSE-STATION-3 hospital="Memorial General Hospital" department=Cardiology unit="Cardiac Intensive Care Unit" incident_id=INC-2026-03-05-001 pod.name=med-tracker-prod-03-7f8d9c-xk2p9 pod.namespace=production pod.ip=10.244.3.47 node.name=ip-10-50-23-145 container.name=medication-tracker container.image=medication-tracker:v0.1.0 deployment.name=medication-tracker-prod service.name=medication-tracker cluster.name=us-east-1-prod hostname=med-tracker-prod-03 python_version=3.12.1 memory_usage_mb=2847 cpu_usage_percent=34.5 uptime_hours=168.3

@@ -1,107 +1,84 @@
 {
   "timestamp": "2026-03-05T18:21:44.345678Z",
   "status": "error",
-  "message": "Patient validation failed - invalid date format",
-  "service": "medication-tracker",
-  "ddsource": "python",
-  "ddtags": "env:production,version:0.1.0,team:platform,department:registration",
-  "hostname": "med-tracker-prod-03",
+  "message": "1 validation error for MedicationSchedule\nmedications\n  Field required [type=missing, input_value={'patient_id': 'P-22222'...26-03-05', 'shift': 'day'}, input_type=dict]",
   "logger": {
     "name": "medication_tracker.models",
-    "thread_name": "Thread-18",
-    "method_name": "validate_date_format"
+    "thread_name": "Thread-15",
+    "method_name": "create_schedule"
   },
   "error": {
     "kind": "ValidationError",
-    "message": "1 validation error for Patient\ndate_of_birth\n  Invalid date format: 03/15/1985 (type=value_error)",
-    "stack": "Traceback (most recent call last):\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 123, in create_patient\n    patient = Patient(**patient_data)\n  File \"pydantic/main.py\", line 164, in pydantic.main.BaseModel.__init__\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/models.py\", line 34, in validate_date_format\n    raise ValueError(f\"Invalid date format: {v}\")  # Line 34 - Bug #5\npydantic_core._pydantic_core.ValidationError: 1 validation error for Patient\ndate_of_birth\n  Invalid date format: 03/15/1985 (type=value_error)"
+    "message": "1 validation error for MedicationSchedule\nmedications\n  Field required [type=missing, input_value={'patient_id': 'P-22222'...26-03-05', 'shift': 'day'}, input_type=dict]",
+    "stack": "Traceback (most recent call last):\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 267, in create_schedule_endpoint\n    schedule = MedicationSchedule(**request_data)\n  File \"/usr/local/lib/python3.12/site-packages/pydantic/main.py\", line 176, in __init__\n    self.__pydantic_validator__.validate_python(data, self_instance=self)\npydantic_core._pydantic_core.ValidationError: 1 validation error for MedicationSchedule\nmedications\n  Field required [type=missing, input_value={'patient_id': 'P-22222'...26-03-05', 'shift': 'day'}, input_type=dict]"
   },
   "http": {
     "method": "POST",
-    "url": "/api/v1/patients",
+    "url": "/api/v1/schedule/create",
     "status_code": 422,
-    "useragent": "PRS-Integration/4.2.1",
-    "referer": null,
-    "request_id": "req-e1h7g3h6-8i5f-4e23-3g7h-1j6i2f5e9g0h"
+    "useragent": "MedTracker-Client/2.1.0",
+    "referer": "https://medtracker.hospital.local/schedules/new",
+    "request_id": "req-e1h7g3h6-8i5f-8e23-3g7h-1j6i2f5e9g0h"
   },
   "network": {
     "client": {
-      "ip": "10.50.23.156"
-    }
+      "ip": "10.50.89.145"
+    },
+    "destination": {
+      "ip": "10.244.9.112"
+    },
+    "bytes_written": 1247
   },
   "usr": {
-    "id": "REG-4521",
-    "name": "Jennifer Williams",
-    "role": "Registration Clerk",
-    "department": "Patient Registration",
-    "workstation": "REGISTRATION-DESK-2"
+    "id": "nurse-8945",
+    "name": "Jessica Lee",
+    "role": "registered_nurse",
+    "department": "Pediatrics",
+    "workstation": "PEDS-STATION-2"
   },
   "patient": {
-    "id": "P-55443",
-    "first_name": "Emily",
-    "last_name": "Rodriguez",
-    "date_of_birth": "03/15/1985",
-    "gender": "F"
-  },
-  "validation_errors": [
-    {
-      "loc": ["date_of_birth"],
-      "msg": "Invalid date format: 03/15/1985",
-      "type": "value_error",
-      "input": "03/15/1985",
-      "expected_format": "YYYY-MM-DD"
-    }
-  ],
-  "integration": {
-    "source_system": "Patient Registration System",
-    "source_version": "PRS-4.2.1",
-    "interface": "HL7 v2.5",
-    "message_type": "ADT^A04"
-  },
-  "root_cause": {
-    "issue": "Overly strict date format validation in Pydantic model",
-    "details": "Only accepts YYYY-MM-DD format, rejects common MM/DD/YYYY format from PRS",
-    "affected_code": "src/medication_tracker/models.py:34",
-    "impact": "HIGH"
-  },
-  "incident": {
-    "id": "INC-2026-03-05-005",
-    "severity": "HIGH",
-    "tags": ["validation-error", "date-format", "integration-failure", "pydantic"]
+    "id": "P-22222",
+    "mrn": "MRN-2024-333444",
+    "name": "Sophie Williams",
+    "age": 8,
+    "room": "PEDS-WARD-2-05"
   },
   "hospital": {
     "name": "Memorial General Hospital",
-    "department": "Registration",
-    "unit": "Main Registration Desk"
+    "department": "Pediatrics",
+    "unit": "Pediatric Ward 2"
   },
+  "session_id": "sess-peds-station-2-20260305-182000",
+  "correlation_id": "req-e1h7g3h6-8i5f-8e23-3g7h-1j6i2f5e9g0h",
   "dd": {
-    "trace_id": "1234567890123456789",
-    "span_id": "9876543210987654",
+    "service": "medication-tracker",
     "env": "production",
     "version": "0.1.0",
-    "service": "medication-tracker"
+    "trace_id": "1234567890123456789",
+    "span_id": "9876543210987654",
+    "parent_id": "1111222233334444"
   },
-  "duration": 45000000,
-  "resource": "POST /api/v1/patients",
-  "similar_incidents": {
-    "count": 4,
-    "frequency": "15-20 times per day",
-    "pattern": "All from Patient Registration System using MM/DD/YYYY format"
-  },
-  "business_impact": {
-    "affected_users": 15,
-    "time_lost_per_incident": "3-5 minutes",
-    "total_time_lost_daily": "45-100 minutes"
-  },
-  "alert": {
-    "sent": true,
-    "recipients": ["it-support@memorial.hospital", "integration-team@memorial.hospital"],
-    "pagerduty_incident": "PD-2026-03-05-005"
-  },
+  "ddtags": "env:production,service:medication-tracker,version:0.1.0,cluster:us-east-1-prod,namespace:production,pod:med-tracker-prod-worker-05-2n7k4",
+  "host": "med-tracker-prod-worker-05",
+  "hostname": "ip-10-50-34-178",
+  "container_id": "e1h7g3h6-8i5f-8e23-3g7h-1j6i2f5e9g0h",
+  "pod_name": "med-tracker-prod-worker-05-2n7k4",
+  "kube_namespace": "production",
+  "kube_cluster_name": "prod-cluster",
+  "cloud_provider": "aws",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1b",
   "system": {
-    "memory_usage_mb": 2987,
-    "cpu_usage_percent": 36.8,
-    "python_version": "3.12.1",
-    "pydantic_version": "2.5.3"
-  }
+    "process": {
+      "pid": 7623
+    },
+    "memory": {
+      "usage_mb": 2134
+    },
+    "cpu": {
+      "usage_percent": 36.8
+    }
+  },
+  "python_version": "3.12.1",
+  "pydantic_version": "2.5.3"
 }
