@@ -1,0 +1,96 @@
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - Schedule validation batch job started - processing 127 pending schedules
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: INFO - Batch job ID: BATCH-2026-03-05-001 | Correlation ID: batch-req-g3j9i5j8-0k7h
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 1/127: patient_id=P-44556
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-44556
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - Traceback (most recent call last):
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/batch/schedule_validator_job.py", line 67, in process_schedule
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -     is_valid = validate_schedule_timing(schedule)
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 67, in validate_schedule_timing
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -     if _schedules_overlap(med1.frequency_hours, med2.frequency_hours):  # Line 67 - Bug #7
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 103, in _schedules_overlap
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR -     diff = abs((time1 - time2).total_seconds())
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:37 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-44556 (Patricia Wilson, age 74, room CARD-408) | Medications: Metoprolol, Lisinopril
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 2/127: patient_id=P-12378
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-12378
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR - Traceback (most recent call last):
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/batch/schedule_validator_job.py", line 67, in process_schedule
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -     is_valid = validate_schedule_timing(schedule)
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 67, in validate_schedule_timing
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -     if _schedules_overlap(med1.frequency_hours, med2.frequency_hours):  # Line 67 - Bug #7
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 103, in _schedules_overlap
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR -     diff = abs((time1 - time2).total_seconds())
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:38 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-12378 (Robert Kim, age 62, room MED-305) | Medications: Warfarin, Aspirin
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 3/127: patient_id=P-56789
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-56789
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR - Traceback (most recent call last):
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/batch/schedule_validator_job.py", line 67, in process_schedule
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -     is_valid = validate_schedule_timing(schedule)
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 67, in validate_schedule_timing
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -     if _schedules_overlap(med1.frequency_hours, med2.frequency_hours):  # Line 67 - Bug #7
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -   File "/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py", line 103, in _schedules_overlap
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR -     diff = abs((time1 - time2).total_seconds())
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:39 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-56789 (Jennifer Martinez, age 45, room ICU-102) | Medications: Insulin, Metformin
+Mar  5 20:18:40 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 4/127: patient_id=P-90123
+Mar  5 20:18:40 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-90123
+Mar  5 20:18:40 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:40 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-90123 (Michael Chen, age 58, room MED-412) | Medications: Levothyroxine, Omeprazole
+Mar  5 20:18:41 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 5/127: patient_id=P-34567
+Mar  5 20:18:41 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-34567
+Mar  5 20:18:41 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:41 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-34567 (Sarah Thompson, age 71, room CARD-201) | Medications: Amlodipine, Atorvastatin
+Mar  5 20:18:42 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 6/127: patient_id=P-78234
+Mar  5 20:18:42 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-78234
+Mar  5 20:18:42 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:42 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-78234 (David Wilson, age 53, room MED-218) | Medications: Furosemide, Spironolactone
+Mar  5 20:18:43 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 7/127: patient_id=P-45123
+Mar  5 20:18:43 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-45123
+Mar  5 20:18:43 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:43 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-45123 (Lisa Anderson, age 39, room ER-15) | Medications: Morphine, Ondansetron
+Mar  5 20:18:44 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 8/127: patient_id=P-67890
+Mar  5 20:18:44 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-67890
+Mar  5 20:18:44 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:44 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-67890 (Maria Garcia, age 53, room MED-312) | Medications: Insulin Glargine, Atorvastatin
+Mar  5 20:18:45 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 9/127: patient_id=P-23456
+Mar  5 20:18:45 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-23456
+Mar  5 20:18:45 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:45 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-23456 (Thomas Lee, age 67, room ICU-304) | Medications: Heparin, Enoxaparin
+Mar  5 20:18:46 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 10/127: patient_id=P-89012
+Mar  5 20:18:46 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-89012
+Mar  5 20:18:46 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:46 med-tracker-prod-03 medication-tracker[8472]: ERROR - Patient: P-89012 (Patricia Brown, age 44, room MED-507) | Medications: Prednisone, Albuterol
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: WARN - Error rate exceeding threshold: 10/10 schedules failed (100%)
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: WARN - Same error pattern detected across all failures: TypeError in schedule_validator.py:67
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: INFO - Continuing batch processing...
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 11/127: patient_id=P-11223
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-11223
+Mar  5 20:18:47 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:48 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 12/127: patient_id=P-55667
+Mar  5 20:18:48 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-55667
+Mar  5 20:18:48 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:49 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 13/127: patient_id=P-99887
+Mar  5 20:18:49 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-99887
+Mar  5 20:18:49 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:50 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 14/127: patient_id=P-33445
+Mar  5 20:18:50 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-33445
+Mar  5 20:18:50 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:51 med-tracker-prod-03 medication-tracker[8472]: INFO - Processing schedule 15/127: patient_id=P-77889
+Mar  5 20:18:51 med-tracker-prod-03 medication-tracker[8472]: ERROR - medication_tracker.schedule_validator - Failed to validate schedule for patient P-77889
+Mar  5 20:18:51 med-tracker-prod-03 medication-tracker[8472]: ERROR - TypeError: unsupported operand type(s) for -: 'int' and 'int'
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - CRITICAL: Batch job failure rate at 100% after 15 schedules
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Root cause: Type mismatch in schedule_validator.py:67 - passing int (frequency_hours) where datetime expected
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Affected code: src/medication_tracker/schedule_validator.py:67
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Impact: CRITICAL - All schedule validations failing, batch job cannot complete
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Aborting batch job BATCH-2026-03-05-001 after 15 consecutive failures
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Batch job summary: 0 succeeded, 15 failed, 112 skipped
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Incident ID: INC-2026-03-05-007
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Alert sent to: it-support@memorial.hospital, clinical-informatics@memorial.hospital, on-call-engineer@memorial.hospital
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - PagerDuty incident created: PD-2026-03-05-007
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: ERROR - Slack alert sent to: #medication-tracker-alerts
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: INFO - Batch job BATCH-2026-03-05-001 terminated with status: FAILED
+Mar  5 20:18:52 med-tracker-prod-03 medication-tracker[8472]: INFO - Total runtime: 15 seconds | Processed: 15/127 (11.8%) | Success rate: 0%

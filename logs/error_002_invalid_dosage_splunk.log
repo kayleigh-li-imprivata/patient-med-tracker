@@ -1,0 +1,24 @@
+2026-03-05T15:47:12.456789Z host=med-tracker-prod-03 source=/var/log/medication-tracker/app.log sourcetype=python:medication_tracker index=production environment=prod
+level=ERROR logger=medication_tracker.medication_service thread=Thread-8 process_id=8472
+correlation_id=req-b8e4d0e3-5f2c-4b90-0d4e-8g3f9c2b6d7e session_id=sess-pharmacy-terminal-7-20260305-154500
+message="Failed to add medication to schedule due to invalid dosage"
+error_type=ValueError error_message="Invalid dosage: -50.0"
+patient_id=P-67890 patient_mrn=MRN-2024-456123 patient_name="Maria Garcia" patient_age=53 patient_room=MED-312
+medication_name=Metformin medication_dosage=-50.0 medication_frequency_hours=12 medication_route=oral
+prescribing_physician="Dr. Amanda Chen" indication="Type 2 Diabetes"
+user_id=PH-7823 user_name="Michael Chen" user_role="Clinical Pharmacist" workstation=PHARMACY-TERMINAL-7
+hospital="Memorial General Hospital" department=Pharmacy unit="Inpatient Pharmacy"
+stack_trace="Traceback (most recent call last):\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 234, in add_medication_endpoint\n    service.add_medication_to_schedule(\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/medication_service.py\", line 78, in add_medication_to_schedule\n    raise ValueError(f\"Invalid dosage: {medication.dosage}\")\nValueError: Invalid dosage: -50.0"
+root_cause="Wrong exception type raised - should raise InvalidDosageError instead of ValueError"
+affected_code="src/medication_tracker/medication_service.py:78"
+impact=HIGH severity=HIGH
+incident_id=INC-2026-03-05-002
+alert_sent=true alert_recipients="pharmacy-team@memorial.hospital,it-support@memorial.hospital"
+request_method=POST request_endpoint="/api/v1/medications/add" request_duration_ms=89 client_ip=10.50.23.178
+memory_usage_mb=2912 cpu_usage_percent=28.3 uptime_hours=168.8
+similar_incidents_count=2 similar_incidents_last_24h=2
+remediation_step_1="Update exception handling to use InvalidDosageError"
+remediation_step_2="Add data validation in upstream pharmacy system"
+remediation_step_3="Review integration with pharmacy order entry system"
+business_impact="Breaks error handling and logging, makes debugging difficult"
+estimated_frequency="2-3 times per day"
