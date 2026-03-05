@@ -1,0 +1,115 @@
+# Prometheus Metrics Export - Medication Tracker Error Metrics
+# Scraped at: 2026-03-05T19:05:22.678901Z
+# Instance: med-tracker-prod-03:8000
+# Job: medication-tracker
+
+# HELP medication_errors_total Total number of medication errors by type
+# TYPE medication_errors_total counter
+medication_errors_total{error_type="DrugInteractionError",severity="critical",department="cardiology",environment="production"} 127
+medication_errors_total{error_type="InvalidDosageError",severity="high",department="pharmacy",environment="production"} 89
+medication_errors_total{error_type="AttributeError",severity="high",department="internal_medicine",environment="production"} 56
+medication_errors_total{error_type="IndexError",severity="medium",department="emergency",environment="production"} 234
+medication_errors_total{error_type="ValidationError",severity="high",department="registration",environment="production"} 312
+medication_errors_total{error_type="KeyError",severity="medium",department="pharmacy",environment="production"} 445
+medication_errors_total{error_type="TypeError",severity="medium",department="cardiology",environment="production"} 178
+
+# HELP medication_error_rate_per_second Rate of medication errors per second
+# TYPE medication_error_rate_per_second gauge
+medication_error_rate_per_second{error_type="KeyError",department="pharmacy"} 0.0083
+
+# HELP medication_request_duration_seconds Duration of medication requests
+# TYPE medication_request_duration_seconds histogram
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.005"} 1234
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.01"} 2456
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.025"} 3678
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.05"} 4123
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.1"} 4456
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.25"} 4567
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="0.5"} 4589
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="1"} 4590
+medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions",le="+Inf"} 4590
+medication_request_duration_seconds_sum{endpoint="/api/v1/drug-interactions"} 123.45
+medication_request_duration_seconds_count{endpoint="/api/v1/drug-interactions"} 4590
+
+# HELP http_requests_total Total HTTP requests by status code
+# TYPE http_requests_total counter
+http_requests_total{method="GET",endpoint="/api/v1/drug-interactions",status="200"} 4145
+http_requests_total{method="GET",endpoint="/api/v1/drug-interactions",status="500"} 445
+
+# HELP python_exceptions_total Total Python exceptions by type
+# TYPE python_exceptions_total counter
+python_exceptions_total{exception="KeyError",module="medication_tracker.drug_interactions",function="get_interaction_details"} 445
+
+# HELP medication_tracker_up Whether the medication tracker is up (1) or down (0)
+# TYPE medication_tracker_up gauge
+medication_tracker_up{instance="med-tracker-prod-03:8000",job="medication-tracker"} 1
+
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 12847.23
+
+# HELP process_resident_memory_bytes Resident memory size in bytes
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 3145728000
+
+# HELP process_virtual_memory_bytes Virtual memory size in bytes
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 4294967296
+
+# HELP process_open_fds Number of open file descriptors
+# TYPE process_open_fds gauge
+process_open_fds 58
+
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1709045025.123
+
+# Alert: MedicationKeyErrorRateHigh
+# Labels: {alertname="MedicationKeyErrorRateHigh", severity="warning", team="pharmacy-informatics", environment="production"}
+# Annotations: {summary="High KeyError rate in drug interactions", description="KeyError rate is 0.0083 errors/sec (25-30 per hour) in medication_tracker.drug_interactions"}
+# State: FIRING
+# ActiveAt: 2026-03-05T18:45:00Z
+# Value: 0.0083
+
+# Detailed Error Log Entry (from application logs, correlated via trace_id)
+# timestamp=2026-03-05T19:05:22.678901Z level=error logger=medication_tracker.drug_interactions
+# trace_id=1234567890123456789 span_id=9876543210987654
+# error_type=KeyError error_message="'Amoxicillin'"
+# patient_id=P-77665 patient_mrn=MRN-2024-776655 patient_name="Thomas Anderson"
+# medication_name=Amoxicillin medication_dosage=500.0 medication_frequency_hours=8
+# user_id=PH-8923 user_name="David Lee" user_role="Clinical Pharmacist"
+# hospital="Memorial General Hospital" department=Pharmacy
+# stack_trace="Traceback (most recent call last):\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 678, in get_drug_interactions\n    details = get_interaction_details(medication_name)\n  File \"/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py\", line 89, in get_interaction_details\n    interactions = DANGEROUS_INTERACTIONS[medication_name]  # Line 89 - Bug #6\nKeyError: 'Amoxicillin'"
+# root_cause="Missing error handling when accessing DANGEROUS_INTERACTIONS dictionary"
+# affected_code="src/medication_tracker/drug_interactions.py:89"
+# impact=MEDIUM
+# incident_id=INC-2026-03-05-006
+# correlation_id=req-f2i8h4i7-9j6g-4f34-4h8i-2k7j3g6f0h1i
+# http_method=GET http_path="/api/v1/drug-interactions/Amoxicillin" http_status=500 http_duration_ms=67
+# client_ip=10.50.23.189 user_agent="PharmacyClient/3.2.0"
+# kubernetes_namespace=production kubernetes_pod=med-tracker-prod-03-7f8d9c-xk2p9
+# kubernetes_node=ip-10-50-23-189 kubernetes_cluster=us-east-1-prod
+# similar_incidents_count=5 similar_incidents_frequency="25-30 times per day"
+# business_impact="Prevents pharmacists from completing medication verification, 50-120 minutes lost daily"
+# remediation="Replace direct dictionary access with .get() method, integrate with comprehensive drug database"
+
+# Prometheus Query Examples:
+# Rate of KeyErrors in last 5 minutes:
+#   rate(medication_errors_total{error_type="KeyError"}[5m])
+#
+# Percentage of failed requests:
+#   sum(rate(http_requests_total{status="500"}[5m])) / sum(rate(http_requests_total[5m])) * 100
+#
+# P95 latency for drug interaction endpoint:
+#   histogram_quantile(0.95, rate(medication_request_duration_seconds_bucket{endpoint="/api/v1/drug-interactions"}[5m]))
+#
+# Alert rule that fired:
+#   alert: MedicationKeyErrorRateHigh
+#   expr: rate(medication_errors_total{error_type="KeyError"}[5m]) > 0.005
+#   for: 5m
+#   labels:
+#     severity: warning
+#     team: pharmacy-informatics
+#   annotations:
+#     summary: High KeyError rate in drug interactions
+#     description: KeyError rate is {{ $value }} errors/sec in the last 5 minutes
