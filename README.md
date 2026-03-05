@@ -1,6 +1,6 @@
 # Patient Medication Tracker
 
-Fake hospital medication tracking application for testing the Bug Ticket Analyzer agent.
+Fake hospital medication tracking application for testing the Bug Ticket Analyzer for the Imprivata AI Bootcamp.
 
 ## Purpose
 
@@ -21,7 +21,3 @@ This codebase contains 7 intentional bugs:
 5. Validation error (invalid date format)
 6. Key error (missing medication lookup)
 7. Type error (wrong argument type)
-
-## DO NOT USE IN PRODUCTION
-
-This code is intentionally buggy and should never be used in a real healthcare setting.
