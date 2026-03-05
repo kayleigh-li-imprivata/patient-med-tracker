@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-03-05T14:23:45.123456Z",
+  "level": "ERROR",
+  "logger": "medication_tracker.drug_interactions",
+  "thread": "Thread-12",
+  "process_id": 8472,
+  "correlation_id": "req-a7f3c9d2-4e1b-4a89-9c3d-7f2e8b1a5c6d",
+  "session_id": "sess-nurse-station-3-20260305-142000",
+  "message": "Drug interaction check failed for patient P-12345",
+  "error": {
+    "type": "DrugInteractionError",
+    "message": "aspirin conflicts with warfarin",
+    "traceback": [
+      "Traceback (most recent call last):",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 234, in add_medication_endpoint",
+      "    service.add_medication_to_schedule(",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/medication_service.py\", line 66, in add_medication_to_schedule",
+      "    check_drug_interaction(schedule.medications, medication)",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py\", line 45, in check_drug_interaction",
+      "    if existing.name in DANGEROUS_INTERACTIONS:  # Line 45 - Bug #1",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py\", line 47, in check_drug_interaction",
+      "    if new_medication.name in conflicts:",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py\", line 49, in check_drug_interaction",
+      "    raise DrugInteractionError(",
+      "medication_tracker.exceptions.DrugInteractionError: aspirin conflicts with warfarin"
+    ],
+    "stack_locals": {
+      "existing_medications": [
+        {
+          "name": "warfarin",
+          "dosage": 5.0,
+          "frequency_hours": 24,
+          "start_date": "2026-02-15T08:00:00Z",
+          "prescribing_physician": "Dr. Robert Martinez"
+        }
+      ],
+      "new_medication": {
+        "name": "aspirin",
+        "dosage": 81.0,
+        "frequency_hours": 24,
+        "prescribing_physician": "Dr. Jennifer Wong"
+      },
+      "existing": {
+        "name": "warfarin",
+        "dosage": 5.0
+      }
+    }
+  },
+  "context": {
+    "patient": {
+      "id": "P-12345",
+      "mrn": "MRN-2024-789456",
+      "first_name": "John",
+      "last_name": "Anderson",
+      "date_of_birth": "1958-06-23",
+      "age": 67,
+      "gender": "M",
+      "room": "ICU-204",
+      "admission_date": "2026-03-01T14:30:00Z"
+    },
+    "existing_medications": [
+      {
+        "name": "warfarin",
+        "dosage": 5.0,
+        "frequency_hours": 24,
+        "route": "oral",
+        "start_date": "2026-02-15T08:00:00Z",
+        "prescribing_physician": "Dr. Robert Martinez",
+        "indication": "Atrial fibrillation",
+        "last_administered": "2026-03-05T08:00:00Z",
+        "next_due": "2026-03-06T08:00:00Z"
+      },
+      {
+        "name": "Metoprolol",
+        "dosage": 50.0,
+        "frequency_hours": 12,
+        "route": "oral",
+        "start_date": "2026-02-15T08:00:00Z",
+        "prescribing_physician": "Dr. Robert Martinez",
+        "indication": "Hypertension"
+      },
+      {
+        "name": "Lisinopril",
+        "dosage": 20.0,
+        "frequency_hours": 24,
+        "route": "oral",
+        "start_date": "2026-02-20T08:00:00Z",
+        "prescribing_physician": "Dr. Robert Martinez",
+        "indication": "Hypertension"
+      }
+    ],
+    "new_medication": {
+      "name": "aspirin",
+      "dosage": 81.0,
+      "frequency_hours": 24,
+      "route": "oral",
+      "prescribing_physician": "Dr. Jennifer Wong",
+      "indication": "Cardiovascular protection",
+      "order_id": "ORD-2026-03-05-8472",
+      "order_timestamp": "2026-03-05T14:15:00Z"
+    },
+    "user": {
+      "id": "N-4521",
+      "name": "Sarah Thompson",
+      "role": "Registered Nurse",
+      "department": "Cardiology",
+      "shift": "Day Shift (07:00-19:00)",
+      "workstation": "NURSE-STATION-3"
+    },
+    "hospital": {
+      "name": "Memorial General Hospital",
+      "location": "Boston, MA",
+      "department": "Cardiology - ICU",
+      "unit": "Cardiac Intensive Care Unit",
+      "floor": 2
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Case-sensitive comparison bug in drug interaction checker",
+    "details": "The medication name 'warfarin' (lowercase) from the database does not match 'Warfarin' (capitalized) in the DANGEROUS_INTERACTIONS dictionary",
+    "affected_code": "src/medication_tracker/drug_interactions.py:45",
+    "expected_behavior": "Should perform case-insensitive comparison or normalize medication names",
+    "actual_behavior": "Case-sensitive comparison causes interaction check to fail, allowing dangerous drug combinations",
+    "impact": "CRITICAL - Could allow dangerous drug interactions to go undetected",
+    "similar_incidents": [
+      {
+        "date": "2026-02-28T10:15:00Z",
+        "patient_id": "P-98765",
+        "medications": ["ibuprofen", "Warfarin"]
+      },
+      {
+        "date": "2026-03-02T16:45:00Z",
+        "patient_id": "P-45678",
+        "medications": ["naproxen", "Warfarin"]
+      }
+    ]
+  },
+  "system_info": {
+    "hostname": "med-tracker-prod-03",
+    "environment": "production",
+    "version": "0.1.0",
+    "python_version": "3.12.1",
+    "os": "Linux 5.15.0-89-generic",
+    "memory_usage_mb": 2847,
+    "cpu_usage_percent": 34.5,
+    "uptime_hours": 168.3
+  },
+  "request_info": {
+    "method": "POST",
+    "endpoint": "/api/v1/medications/add",
+    "client_ip": "10.50.23.145",
+    "user_agent": "MedTracker-Client/2.4.1",
+    "request_id": "req-a7f3c9d2-4e1b-4a89-9c3d-7f2e8b1a5c6d",
+    "duration_ms": 127
+  },
+  "severity": "CRITICAL",
+  "tags": ["drug-interaction", "patient-safety", "medication-error", "warfarin", "aspirin"],
+  "alert_sent": true,
+  "alert_recipients": [
+    "pharmacy-team@memorial.hospital",
+    "patient-safety@memorial.hospital",
+    "dr.martinez@memorial.hospital"
+  ],
+  "incident_id": "INC-2026-03-05-001"
+}

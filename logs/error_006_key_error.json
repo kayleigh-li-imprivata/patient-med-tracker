@@ -1,0 +1,208 @@
+{
+  "timestamp": "2026-03-05T19:05:22.678901Z",
+  "level": "ERROR",
+  "logger": "medication_tracker.drug_interactions",
+  "thread": "Thread-31",
+  "process_id": 8472,
+  "correlation_id": "req-f2i8h4i7-9j6g-4f34-4h8i-2k7j3g6f0h1i",
+  "session_id": "sess-pharmacy-workstation-4-20260305-190000",
+  "message": "Failed to retrieve drug interaction details - medication not in database",
+  "error": {
+    "type": "KeyError",
+    "message": "'Amoxicillin'",
+    "traceback": [
+      "Traceback (most recent call last):",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 678, in get_drug_interactions",
+      "    details = get_interaction_details(medication_name)",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/drug_interactions.py\", line 89, in get_interaction_details",
+      "    interactions = DANGEROUS_INTERACTIONS[medication_name]  # Line 89 - Bug #6",
+      "KeyError: 'Amoxicillin'"
+    ],
+    "stack_locals": {
+      "medication_name": "Amoxicillin",
+      "DANGEROUS_INTERACTIONS": {
+        "Warfarin": ["aspirin", "ibuprofen", "naproxen"],
+        "Methotrexate": ["NSAIDs", "penicillin"],
+        "Digoxin": ["amiodarone", "verapamil"]
+      }
+    }
+  },
+  "context": {
+    "medication_requested": {
+      "name": "Amoxicillin",
+      "generic_name": "Amoxicillin",
+      "brand_names": ["Amoxil", "Trimox"],
+      "drug_class": "Penicillin Antibiotic",
+      "ndc_code": "00093-4151-73"
+    },
+    "patient": {
+      "id": "P-77665",
+      "mrn": "MRN-2024-776655",
+      "first_name": "Thomas",
+      "last_name": "Anderson",
+      "date_of_birth": "1965-08-22",
+      "age": 60,
+      "gender": "M",
+      "room": "MED-215",
+      "admission_date": "2026-03-04T11:30:00Z",
+      "diagnosis": "Community-acquired pneumonia",
+      "allergies": ["Sulfa drugs"],
+      "current_medications": [
+        {
+          "name": "Metoprolol",
+          "dosage": 50.0,
+          "frequency_hours": 12
+        },
+        {
+          "name": "Atorvastatin",
+          "dosage": 40.0,
+          "frequency_hours": 24
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": 20.0,
+          "frequency_hours": 24
+        }
+      ]
+    },
+    "prescribing_order": {
+      "order_id": "ORD-2026-03-05-7734",
+      "medication": "Amoxicillin",
+      "dosage": 500.0,
+      "frequency_hours": 8,
+      "route": "oral",
+      "duration_days": 10,
+      "prescribing_physician": "Dr. Michael Chang",
+      "indication": "Community-acquired pneumonia",
+      "order_timestamp": "2026-03-05T19:00:00Z"
+    },
+    "user": {
+      "id": "PH-8923",
+      "name": "David Lee",
+      "role": "Clinical Pharmacist",
+      "department": "Pharmacy",
+      "shift": "Evening Shift (15:00-23:00)",
+      "workstation": "PHARMACY-WORKSTATION-4",
+      "license_number": "RPH-MA-89234",
+      "certifications": ["Board Certified Pharmacotherapy Specialist"]
+    },
+    "hospital": {
+      "name": "Memorial General Hospital",
+      "location": "Boston, MA",
+      "department": "Pharmacy",
+      "unit": "Inpatient Pharmacy",
+      "floor": 1
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Missing error handling when accessing DANGEROUS_INTERACTIONS dictionary",
+    "details": "Function get_interaction_details() directly accesses DANGEROUS_INTERACTIONS[medication_name] without checking if the key exists. Amoxicillin is not in the dictionary, causing KeyError. The dictionary only contains medications with known dangerous interactions, but the function assumes all medications are present.",
+    "affected_code": "src/medication_tracker/drug_interactions.py:89",
+    "expected_behavior": "Should check if medication exists in dictionary using .get() method or 'in' operator, return empty list or appropriate message if not found",
+    "actual_behavior": "Raises KeyError when medication not in dictionary, breaking the workflow",
+    "impact": "MEDIUM - Prevents pharmacists from completing medication verification",
+    "data_structure_issue": {
+      "current_approach": "Dictionary only contains medications WITH interactions",
+      "problem": "Function assumes ALL medications are in dictionary",
+      "medications_in_dict": 47,
+      "total_medications_in_formulary": 1247,
+      "coverage": "3.8%"
+    },
+    "similar_incidents": [
+      {
+        "date": "2026-03-01T13:20:00Z",
+        "medication": "Acetaminophen",
+        "patient_id": "P-12345"
+      },
+      {
+        "date": "2026-03-02T16:45:00Z",
+        "medication": "Metformin",
+        "patient_id": "P-67890"
+      },
+      {
+        "date": "2026-03-03T10:30:00Z",
+        "medication": "Lisinopril",
+        "patient_id": "P-23456"
+      },
+      {
+        "date": "2026-03-04T14:15:00Z",
+        "medication": "Omeprazole",
+        "patient_id": "P-78901"
+      },
+      {
+        "date": "2026-03-05T08:50:00Z",
+        "medication": "Levothyroxine",
+        "patient_id": "P-34567"
+      }
+    ],
+    "frequency": "Approximately 25-30 times per day",
+    "pattern": "Occurs for any medication not in DANGEROUS_INTERACTIONS dictionary (96.2% of formulary)"
+  },
+  "system_info": {
+    "hostname": "med-tracker-prod-03",
+    "environment": "production",
+    "version": "0.1.0",
+    "python_version": "3.12.1",
+    "os": "Linux 5.15.0-89-generic",
+    "memory_usage_mb": 3201,
+    "cpu_usage_percent": 44.3,
+    "uptime_hours": 171.4,
+    "database_connection": "postgresql://med-db-01:5432/medications",
+    "cache_hit_rate": 0.81,
+    "active_connections": 58,
+    "formulary_database": {
+      "total_medications": 1247,
+      "interaction_records": 3421,
+      "last_updated": "2026-03-01T00:00:00Z"
+    }
+  },
+  "request_info": {
+    "method": "GET",
+    "endpoint": "/api/v1/drug-interactions/Amoxicillin",
+    "client_ip": "10.50.23.189",
+    "user_agent": "PharmacyClient/3.2.0",
+    "request_id": "req-f2i8h4i7-9j6g-4f34-4h8i-2k7j3g6f0h1i",
+    "duration_ms": 67,
+    "query_params": {
+      "medication_name": "Amoxicillin",
+      "patient_id": "P-77665",
+      "include_severity": true
+    }
+  },
+  "severity": "MEDIUM",
+  "tags": ["key-error", "drug-interactions", "dictionary-access", "pharmacy-workflow"],
+  "alert_sent": true,
+  "alert_recipients": [
+    "it-support@memorial.hospital",
+    "pharmacy-informatics@memorial.hospital"
+  ],
+  "incident_id": "INC-2026-03-05-006",
+  "remediation_steps": [
+    "Replace direct dictionary access with .get() method",
+    "Return empty list or None when medication not in DANGEROUS_INTERACTIONS",
+    "Add logging when medication not found in interaction database",
+    "Consider loading interaction data from external drug database (e.g., FDA, First Databank)",
+    "Add unit tests for medications not in interaction dictionary",
+    "Update API documentation to clarify behavior for medications without known interactions",
+    "Consider adding 'no known interactions' response vs 'medication not found'"
+  ],
+  "business_impact": {
+    "affected_users": 12,
+    "affected_workflows": ["Medication Verification", "Order Entry", "Clinical Review"],
+    "estimated_frequency": "25-30 times per day",
+    "user_experience": "Error displayed, pharmacist cannot complete verification workflow",
+    "workaround": "Pharmacists manually check drug interactions using external references (Lexicomp, Micromedex)",
+    "estimated_time_lost_per_incident": "2-4 minutes",
+    "total_time_lost_daily": "50-120 minutes"
+  },
+  "clinical_impact": {
+    "patient_safety": "MEDIUM - Delays medication verification, but pharmacists use alternative tools",
+    "workflow_disruption": "HIGH - Breaks automated verification process",
+    "staff_satisfaction": "LOW - Frustration with system reliability"
+  },
+  "proposed_solution": {
+    "short_term": "Use DANGEROUS_INTERACTIONS.get(medication_name, []) to return empty list",
+    "long_term": "Integrate with comprehensive drug interaction database (First Databank, Lexicomp)",
+    "estimated_effort": "Short-term: 1 hour, Long-term: 2-3 weeks"
+  }
+}

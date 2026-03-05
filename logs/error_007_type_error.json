@@ -1,0 +1,242 @@
+{
+  "timestamp": "2026-03-05T20:18:37.234567Z",
+  "level": "ERROR",
+  "logger": "medication_tracker.schedule_validator",
+  "thread": "Thread-27",
+  "process_id": 8472,
+  "correlation_id": "req-g3j9i5j8-0k7h-4g45-5i9j-3l8k4h7g1i2j",
+  "session_id": "sess-clinical-workstation-8-20260305-200000",
+  "message": "Schedule validation failed - type error in overlap check",
+  "error": {
+    "type": "TypeError",
+    "message": "unsupported operand type(s) for -: 'int' and 'int'",
+    "traceback": [
+      "Traceback (most recent call last):",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 789, in validate_schedule",
+      "    is_valid = validate_schedule_timing(schedule)",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py\", line 67, in validate_schedule_timing",
+      "    if _schedules_overlap(",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py\", line 67, in validate_schedule_timing",
+      "    med1.frequency_hours,  # Line 67 - Bug #7",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py\", line 103, in _schedules_overlap",
+      "    diff = abs((time1 - time2).total_seconds())",
+      "TypeError: unsupported operand type(s) for -: 'int' and 'int'"
+    ],
+    "stack_locals": {
+      "schedule": {
+        "patient_id": "P-44556",
+        "medications": [
+          {
+            "name": "Metoprolol",
+            "frequency_hours": 12
+          },
+          {
+            "name": "Lisinopril",
+            "frequency_hours": 24
+          }
+        ]
+      },
+      "med1": {
+        "name": "Metoprolol",
+        "dosage": 50.0,
+        "frequency_hours": 12
+      },
+      "med2": {
+        "name": "Lisinopril",
+        "dosage": 20.0,
+        "frequency_hours": 24
+      },
+      "time1": 12,
+      "time2": 24
+    }
+  },
+  "context": {
+    "patient": {
+      "id": "P-44556",
+      "mrn": "MRN-2024-445566",
+      "first_name": "Patricia",
+      "last_name": "Wilson",
+      "date_of_birth": "1952-03-14",
+      "age": 74,
+      "gender": "F",
+      "room": "CARD-408",
+      "admission_date": "2026-03-03T16:45:00Z",
+      "diagnosis": "Congestive heart failure exacerbation",
+      "allergies": ["Penicillin", "Latex"],
+      "code_status": "Full Code"
+    },
+    "schedule": {
+      "patient_id": "P-44556",
+      "medications": [
+        {
+          "name": "Metoprolol",
+          "dosage": 50.0,
+          "frequency_hours": 12,
+          "route": "oral",
+          "start_date": "2026-03-03T20:00:00Z",
+          "prescribing_physician": "Dr. Elizabeth Martinez",
+          "indication": "Heart failure, rate control"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": 20.0,
+          "frequency_hours": 24,
+          "route": "oral",
+          "start_date": "2026-03-03T20:00:00Z",
+          "prescribing_physician": "Dr. Elizabeth Martinez",
+          "indication": "Heart failure, afterload reduction"
+        },
+        {
+          "name": "Furosemide",
+          "dosage": 40.0,
+          "frequency_hours": 12,
+          "route": "oral",
+          "start_date": "2026-03-03T20:00:00Z",
+          "prescribing_physician": "Dr. Elizabeth Martinez",
+          "indication": "Heart failure, volume overload"
+        },
+        {
+          "name": "Spironolactone",
+          "dosage": 25.0,
+          "frequency_hours": 24,
+          "route": "oral",
+          "start_date": "2026-03-04T08:00:00Z",
+          "prescribing_physician": "Dr. Elizabeth Martinez",
+          "indication": "Heart failure, potassium-sparing diuretic"
+        }
+      ],
+      "created_by": "Dr. Elizabeth Martinez",
+      "created_at": "2026-03-03T19:45:00Z",
+      "last_updated": "2026-03-05T20:15:00Z"
+    },
+    "validation_request": {
+      "requested_by": "N-6734",
+      "reason": "New medication added to schedule",
+      "new_medication": {
+        "name": "Digoxin",
+        "dosage": 0.125,
+        "frequency_hours": 24
+      }
+    },
+    "user": {
+      "id": "N-6734",
+      "name": "Rebecca Thompson",
+      "role": "Cardiac Care Nurse",
+      "department": "Cardiology",
+      "shift": "Night Shift (19:00-07:00)",
+      "workstation": "CLINICAL-WORKSTATION-8",
+      "license_number": "RN-MA-67342",
+      "certifications": ["ACLS", "Cardiac Care Certification"]
+    },
+    "hospital": {
+      "name": "Memorial General Hospital",
+      "location": "Boston, MA",
+      "department": "Cardiology",
+      "unit": "Cardiac Care Unit",
+      "floor": 4
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Type mismatch - passing int (frequency_hours) where datetime expected",
+    "details": "Function validate_schedule_timing() calls _schedules_overlap() with med1.frequency_hours and med2.frequency_hours (both integers representing hours), but _schedules_overlap() expects datetime objects. The function signature shows parameters time1: dt.datetime and time2: dt.datetime, but integers are being passed instead.",
+    "affected_code": "src/medication_tracker/schedule_validator.py:67",
+    "expected_behavior": "Should pass actual datetime objects representing when medications are scheduled, or change _schedules_overlap() to accept frequency_hours integers",
+    "actual_behavior": "Passes integers to function expecting datetime, causing TypeError when trying to subtract",
+    "impact": "MEDIUM - Prevents schedule validation, blocks adding new medications",
+    "design_flaw": {
+      "issue": "Confusion between 'frequency' and 'scheduled time'",
+      "frequency_hours": "How often medication is given (e.g., every 12 hours)",
+      "scheduled_time": "Actual time medication is scheduled (e.g., 08:00, 20:00)",
+      "current_code": "Tries to check overlap using frequency, not actual scheduled times",
+      "correct_approach": "Should calculate actual scheduled times based on start_date and frequency, then check for overlaps"
+    },
+    "similar_incidents": [
+      {
+        "date": "2026-03-02T11:30:00Z",
+        "patient_id": "P-12378",
+        "medications": ["Warfarin", "Aspirin"]
+      },
+      {
+        "date": "2026-03-03T15:45:00Z",
+        "patient_id": "P-56789",
+        "medications": ["Insulin", "Metformin"]
+      },
+      {
+        "date": "2026-03-04T09:20:00Z",
+        "patient_id": "P-90123",
+        "medications": ["Levothyroxine", "Omeprazole"]
+      },
+      {
+        "date": "2026-03-05T13:10:00Z",
+        "patient_id": "P-34567",
+        "medications": ["Amlodipine", "Atorvastatin"]
+      }
+    ],
+    "frequency": "Approximately 10-15 times per day",
+    "pattern": "Occurs whenever schedule validation is triggered (new medication added, schedule modified)"
+  },
+  "system_info": {
+    "hostname": "med-tracker-prod-03",
+    "environment": "production",
+    "version": "0.1.0",
+    "python_version": "3.12.1",
+    "os": "Linux 5.15.0-89-generic",
+    "memory_usage_mb": 3087,
+    "cpu_usage_percent": 39.7,
+    "uptime_hours": 172.7,
+    "database_connection": "postgresql://med-db-01:5432/medications",
+    "cache_hit_rate": 0.83,
+    "active_connections": 49
+  },
+  "request_info": {
+    "method": "POST",
+    "endpoint": "/api/v1/schedules/validate",
+    "client_ip": "10.50.23.212",
+    "user_agent": "MedTracker-Client/2.4.1",
+    "request_id": "req-g3j9i5j8-0k7h-4g45-5i9j-3l8k4h7g1i2j",
+    "duration_ms": 178,
+    "request_body": {
+      "patient_id": "P-44556",
+      "schedule_id": "SCH-2026-03-03-4455",
+      "validate_overlaps": true
+    }
+  },
+  "severity": "MEDIUM",
+  "tags": ["type-error", "schedule-validation", "datetime-mismatch", "design-flaw"],
+  "alert_sent": true,
+  "alert_recipients": [
+    "it-support@memorial.hospital",
+    "clinical-informatics@memorial.hospital"
+  ],
+  "incident_id": "INC-2026-03-05-007",
+  "remediation_steps": [
+    "Review design of _schedules_overlap() function",
+    "Option 1: Change function to accept frequency_hours (int) instead of datetime",
+    "Option 2: Calculate actual scheduled times from start_date + frequency before calling",
+    "Option 3: Remove overlap check if not clinically meaningful for frequency-based schedules",
+    "Add type hints validation or runtime type checking",
+    "Add unit tests with proper type checking",
+    "Clarify business requirement: What does 'schedule overlap' mean?",
+    "Consult with clinical staff on overlap detection requirements"
+  ],
+  "business_impact": {
+    "affected_users": 8,
+    "affected_workflows": ["Schedule Validation", "Medication Addition", "Schedule Modification"],
+    "estimated_frequency": "10-15 times per day",
+    "user_experience": "Error displayed, cannot add new medications to schedule",
+    "workaround": "Nurses skip validation and manually verify schedules",
+    "estimated_time_lost_per_incident": "3-5 minutes",
+    "total_time_lost_daily": "30-75 minutes"
+  },
+  "clinical_impact": {
+    "patient_safety": "LOW - Manual verification still occurs",
+    "workflow_disruption": "MEDIUM - Automated validation unavailable",
+    "staff_satisfaction": "MEDIUM - Frustration with broken feature"
+  },
+  "code_review_notes": {
+    "type_hints_present": true,
+    "type_hints_enforced": false,
+    "mypy_enabled": false,
+    "recommendation": "Enable mypy or pyright for static type checking to catch these errors before deployment"
+  }
+}

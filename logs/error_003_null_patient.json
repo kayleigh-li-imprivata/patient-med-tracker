@@ -1,0 +1,170 @@
+{
+  "timestamp": "2026-03-05T16:12:33.789012Z",
+  "level": "ERROR",
+  "logger": "medication_tracker.schedule_validator",
+  "thread": "Thread-15",
+  "process_id": 8472,
+  "correlation_id": "req-c9f5e1f4-6g3d-4c01-1e5f-9h4g0d3c7e8f",
+  "session_id": "sess-doctor-workstation-12-20260305-160000",
+  "message": "Failed to generate patient schedule summary - null patient object",
+  "error": {
+    "type": "AttributeError",
+    "message": "'NoneType' object has no attribute 'id'",
+    "traceback": [
+      "Traceback (most recent call last):",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 456, in get_schedule_summary",
+      "    summary = get_patient_schedule_summary(patient, schedule)",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/schedule_validator.py\", line 123, in get_patient_schedule_summary",
+      "    \"patient_id\": patient.id,  # Line 123 - Bug #3",
+      "AttributeError: 'NoneType' object has no attribute 'id'"
+    ],
+    "stack_locals": {
+      "patient": null,
+      "schedule": {
+        "patient_id": "P-11223",
+        "medications": [
+          {
+            "name": "Lisinopril",
+            "dosage": 10.0,
+            "frequency_hours": 24
+          },
+          {
+            "name": "Metoprolol",
+            "dosage": 25.0,
+            "frequency_hours": 12
+          }
+        ],
+        "start_date": "2026-03-01T08:00:00Z"
+      }
+    }
+  },
+  "context": {
+    "patient": null,
+    "patient_id_from_schedule": "P-11223",
+    "patient_lookup_attempted": true,
+    "patient_lookup_result": "NOT_FOUND",
+    "patient_database_query": "SELECT * FROM patients WHERE id = 'P-11223'",
+    "patient_database_response": {
+      "rows_returned": 0,
+      "query_time_ms": 12
+    },
+    "schedule": {
+      "patient_id": "P-11223",
+      "medications": [
+        {
+          "name": "Lisinopril",
+          "dosage": 10.0,
+          "frequency_hours": 24,
+          "route": "oral",
+          "start_date": "2026-03-01T08:00:00Z",
+          "prescribing_physician": "Dr. Robert Kim",
+          "indication": "Hypertension",
+          "last_administered": "2026-03-05T08:00:00Z"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": 25.0,
+          "frequency_hours": 12,
+          "route": "oral",
+          "start_date": "2026-03-01T08:00:00Z",
+          "prescribing_physician": "Dr. Robert Kim",
+          "indication": "Hypertension",
+          "last_administered": "2026-03-05T14:00:00Z"
+        }
+      ],
+      "start_date": "2026-03-01T08:00:00Z",
+      "created_by": "Dr. Robert Kim",
+      "last_updated": "2026-03-05T14:00:00Z"
+    },
+    "user": {
+      "id": "DR-8934",
+      "name": "Dr. Sarah Johnson",
+      "role": "Attending Physician",
+      "department": "Internal Medicine",
+      "shift": "Day Shift (07:00-19:00)",
+      "workstation": "DOCTOR-WORKSTATION-12",
+      "medical_license": "MD-MA-89342"
+    },
+    "hospital": {
+      "name": "Memorial General Hospital",
+      "location": "Boston, MA",
+      "department": "Internal Medicine",
+      "unit": "General Medical Ward",
+      "floor": 4
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Missing null check before accessing patient attributes",
+    "details": "Function get_patient_schedule_summary() accepts patient parameter that can be None, but doesn't validate before accessing patient.id. Patient lookup failed because patient P-11223 was discharged and removed from active patient database.",
+    "affected_code": "src/medication_tracker/schedule_validator.py:123",
+    "expected_behavior": "Should check if patient is None and either raise appropriate exception or use patient_id from schedule",
+    "actual_behavior": "Attempts to access .id attribute on None, causing AttributeError",
+    "impact": "HIGH - Prevents viewing medication schedules for discharged patients",
+    "data_integrity_issue": "Orphaned medication schedule exists for discharged patient",
+    "patient_status": {
+      "id": "P-11223",
+      "status": "DISCHARGED",
+      "discharge_date": "2026-03-04T16:30:00Z",
+      "discharge_reason": "Condition improved",
+      "follow_up_scheduled": true
+    },
+    "similar_incidents": [
+      {
+        "date": "2026-02-28T09:45:00Z",
+        "patient_id": "P-88776",
+        "status": "TRANSFERRED"
+      },
+      {
+        "date": "2026-03-03T13:20:00Z",
+        "patient_id": "P-55443",
+        "status": "DISCHARGED"
+      }
+    ]
+  },
+  "system_info": {
+    "hostname": "med-tracker-prod-03",
+    "environment": "production",
+    "version": "0.1.0",
+    "python_version": "3.12.1",
+    "os": "Linux 5.15.0-89-generic",
+    "memory_usage_mb": 3024,
+    "cpu_usage_percent": 41.2,
+    "uptime_hours": 169.2,
+    "database_connection": "postgresql://med-db-01:5432/medications",
+    "cache_hit_rate": 0.82,
+    "active_connections": 47
+  },
+  "request_info": {
+    "method": "GET",
+    "endpoint": "/api/v1/schedules/P-11223/summary",
+    "client_ip": "10.50.23.201",
+    "user_agent": "MedTracker-Web/4.1.2 (Chrome/120.0.0.0)",
+    "request_id": "req-c9f5e1f4-6g3d-4c01-1e5f-9h4g0d3c7e8f",
+    "duration_ms": 156,
+    "query_params": {
+      "patient_id": "P-11223",
+      "include_history": true
+    }
+  },
+  "severity": "HIGH",
+  "tags": ["null-pointer", "patient-lookup", "discharged-patient", "data-integrity"],
+  "alert_sent": true,
+  "alert_recipients": [
+    "it-support@memorial.hospital",
+    "data-integrity-team@memorial.hospital"
+  ],
+  "incident_id": "INC-2026-03-05-003",
+  "remediation_steps": [
+    "Add null check in get_patient_schedule_summary()",
+    "Implement graceful handling for discharged patients",
+    "Review data retention policy for medication schedules",
+    "Add database cleanup job for orphaned schedules",
+    "Update API to return appropriate error message for discharged patients"
+  ],
+  "business_impact": {
+    "affected_users": 1,
+    "affected_workflows": ["Schedule Review", "Medication History"],
+    "estimated_frequency": "3-5 times per day",
+    "user_experience": "Error message displayed, workflow blocked"
+  }
+}

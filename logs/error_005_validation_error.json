@@ -1,0 +1,189 @@
+{
+  "timestamp": "2026-03-05T18:21:44.345678Z",
+  "level": "ERROR",
+  "logger": "medication_tracker.models",
+  "thread": "Thread-18",
+  "process_id": 8472,
+  "correlation_id": "req-e1h7g3h6-8i5f-4e23-3g7h-1j6i2f5e9g0h",
+  "session_id": "sess-registration-desk-2-20260305-182000",
+  "message": "Patient validation failed - invalid date format",
+  "error": {
+    "type": "ValidationError",
+    "message": "1 validation error for Patient\ndate_of_birth\n  Invalid date format: 03/15/1985 (type=value_error)",
+    "traceback": [
+      "Traceback (most recent call last):",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/api/routes.py\", line 123, in create_patient",
+      "    patient = Patient(**patient_data)",
+      "  File \"pydantic/main.py\", line 164, in pydantic.main.BaseModel.__init__",
+      "  File \"/opt/hospital/medication-tracker/src/medication_tracker/models.py\", line 34, in validate_date_format",
+      "    raise ValueError(f\"Invalid date format: {v}\")  # Line 34 - Bug #5",
+      "pydantic_core._pydantic_core.ValidationError: 1 validation error for Patient",
+      "date_of_birth",
+      "  Invalid date format: 03/15/1985 (type=value_error)"
+    ],
+    "validation_errors": [
+      {
+        "loc": ["date_of_birth"],
+        "msg": "Invalid date format: 03/15/1985",
+        "type": "value_error",
+        "input": "03/15/1985",
+        "expected_format": "YYYY-MM-DD"
+      }
+    ]
+  },
+  "context": {
+    "patient_data": {
+      "id": "P-55443",
+      "first_name": "Emily",
+      "last_name": "Rodriguez",
+      "date_of_birth": "03/15/1985",
+      "gender": "F",
+      "ssn": "***-**-4521",
+      "phone": "(617) 555-0142",
+      "email": "emily.rodriguez@email.com",
+      "address": {
+        "street": "456 Oak Avenue",
+        "city": "Boston",
+        "state": "MA",
+        "zip": "02115"
+      },
+      "emergency_contact": {
+        "name": "Carlos Rodriguez",
+        "relationship": "Spouse",
+        "phone": "(617) 555-0143"
+      },
+      "insurance": {
+        "provider": "Blue Cross Blue Shield",
+        "policy_number": "BCBS-MA-998877",
+        "group_number": "GRP-12345"
+      }
+    },
+    "data_source": {
+      "system": "Patient Registration System",
+      "version": "PRS-4.2.1",
+      "interface": "HL7 v2.5",
+      "message_type": "ADT^A04",
+      "sending_facility": "MEMORIAL_REGISTRATION"
+    },
+    "user": {
+      "id": "REG-4521",
+      "name": "Jennifer Williams",
+      "role": "Registration Clerk",
+      "department": "Patient Registration",
+      "shift": "Evening Shift (14:00-22:00)",
+      "workstation": "REGISTRATION-DESK-2",
+      "employee_id": "EMP-45219"
+    },
+    "hospital": {
+      "name": "Memorial General Hospital",
+      "location": "Boston, MA",
+      "department": "Registration",
+      "unit": "Main Registration Desk",
+      "floor": 1
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Overly strict date format validation in Pydantic model",
+    "details": "The @model_validator for date_of_birth only accepts YYYY-MM-DD format (ISO 8601), but the Patient Registration System sends dates in MM/DD/YYYY format (common US format). This causes all patient registrations from PRS to fail.",
+    "affected_code": "src/medication_tracker/models.py:34",
+    "expected_behavior": "Should accept multiple common date formats (YYYY-MM-DD, MM/DD/YYYY, DD-MM-YYYY) and normalize to ISO format",
+    "actual_behavior": "Rejects any date not in YYYY-MM-DD format, causing integration failures",
+    "impact": "HIGH - Blocks patient registration from external systems",
+    "integration_impact": {
+      "affected_systems": [
+        "Patient Registration System (PRS)",
+        "Emergency Department Triage System",
+        "Outpatient Scheduling System"
+      ],
+      "date_formats_used": {
+        "PRS": "MM/DD/YYYY",
+        "ED_Triage": "MM/DD/YYYY",
+        "Outpatient": "YYYY-MM-DD"
+      }
+    },
+    "similar_incidents": [
+      {
+        "date": "2026-03-01T09:15:00Z",
+        "patient_name": "John Smith",
+        "dob_format": "01/23/1990"
+      },
+      {
+        "date": "2026-03-02T14:30:00Z",
+        "patient_name": "Maria Garcia",
+        "dob_format": "12/08/1975"
+      },
+      {
+        "date": "2026-03-04T11:45:00Z",
+        "patient_name": "Robert Chen",
+        "dob_format": "06/30/1982"
+      },
+      {
+        "date": "2026-03-05T16:20:00Z",
+        "patient_name": "Sarah Johnson",
+        "dob_format": "09/12/1995"
+      }
+    ],
+    "frequency": "Approximately 15-20 times per day",
+    "pattern": "All failures from Patient Registration System using MM/DD/YYYY format"
+  },
+  "system_info": {
+    "hostname": "med-tracker-prod-03",
+    "environment": "production",
+    "version": "0.1.0",
+    "python_version": "3.12.1",
+    "pydantic_version": "2.5.3",
+    "os": "Linux 5.15.0-89-generic",
+    "memory_usage_mb": 2987,
+    "cpu_usage_percent": 36.8,
+    "uptime_hours": 170.6,
+    "database_connection": "postgresql://med-db-01:5432/medications",
+    "cache_hit_rate": 0.84,
+    "active_connections": 52
+  },
+  "request_info": {
+    "method": "POST",
+    "endpoint": "/api/v1/patients",
+    "client_ip": "10.50.23.156",
+    "user_agent": "PRS-Integration/4.2.1",
+    "request_id": "req-e1h7g3h6-8i5f-4e23-3g7h-1j6i2f5e9g0h",
+    "duration_ms": 45,
+    "request_body": {
+      "id": "P-55443",
+      "first_name": "Emily",
+      "last_name": "Rodriguez",
+      "date_of_birth": "03/15/1985"
+    },
+    "content_type": "application/json",
+    "content_length": 487
+  },
+  "severity": "HIGH",
+  "tags": ["validation-error", "date-format", "integration-failure", "pydantic", "patient-registration"],
+  "alert_sent": true,
+  "alert_recipients": [
+    "it-support@memorial.hospital",
+    "integration-team@memorial.hospital",
+    "registration-supervisor@memorial.hospital"
+  ],
+  "incident_id": "INC-2026-03-05-005",
+  "remediation_steps": [
+    "Update date_of_birth validator to accept multiple date formats",
+    "Use dateutil.parser or similar library for flexible date parsing",
+    "Add format normalization to convert all dates to ISO 8601",
+    "Add unit tests for common date formats (MM/DD/YYYY, DD-MM-YYYY, YYYY-MM-DD)",
+    "Document accepted date formats in API documentation",
+    "Coordinate with PRS team on preferred date format"
+  ],
+  "business_impact": {
+    "affected_users": 15,
+    "affected_workflows": ["Patient Registration", "Patient Admission", "Emergency Intake"],
+    "estimated_frequency": "15-20 times per day",
+    "user_experience": "Registration fails, clerk must manually re-enter patient data",
+    "workaround": "Registration clerks manually convert dates to YYYY-MM-DD format",
+    "estimated_time_lost_per_incident": "3-5 minutes",
+    "total_time_lost_daily": "45-100 minutes"
+  },
+  "compliance_considerations": {
+    "hipaa_impact": "LOW - No PHI exposed, but delays patient care",
+    "data_quality": "Manual re-entry increases risk of data entry errors"
+  }
+}
